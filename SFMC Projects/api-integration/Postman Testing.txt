@@ -1,0 +1,9 @@
+Postman Testing
+The CloudPage was tested in Postman using a POST request with the following settings:
+- URL: https://your-cloudpage-url.com
+- Method: POST
+- Headers: Content-Type: application/x-www-form-urlencoded
+- Body:
+    email = test@example.com
+    fname = Sasi
+    secretkey = sasi@123

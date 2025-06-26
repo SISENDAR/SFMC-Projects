@@ -1,0 +1,7 @@
+Journey Builder
+Journey Name: BirthdayWishesJourney2
+- Entry Source: TodaysBirthdayContacts
+- Step 1: Send Birthday Email
+- Step 2: Wait 10 minutes
+- Step 3: Engagement Split - If Opened, Send Offer Email. If Not, Send Reminder Email.
+- Step 4: Wait 1 day to end journey.
