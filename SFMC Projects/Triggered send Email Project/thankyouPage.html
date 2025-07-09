@@ -1,0 +1,84 @@
+📄 Page 2 – Processing (AMPscript CloudPage):
+- Uses AMPscript to:
+  - Receive form data via RequestParameter()
+  - Create TriggeredSend object
+  - Set Subscriber info (EmailAddress, SubscriberKey)
+  - Add "FirstName" as Attribute
+  - Trigger email using Triggered Send Definition
+  - Show Thank-You page with personalized message
+
+
+  <title>Thank You!</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .thankyou-container {
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 500px;
+    }
+    .thankyou-container h1 {
+      color: #28a745;
+    }
+    .thankyou-container p {
+      font-size: 18px;
+      color: #333333;
+    }
+  </style>
+
+
+
+
+%%[
+  VAR @name, @email, @ts, @tsDef, @ts_sub, @ts_attr, @ts_statusCode, @errorCode
+
+  SET @name = RequestParameter("name")
+  SET @email = RequestParameter("email")
+
+  IF NOT EMPTY(@email) AND NOT EMPTY(@name) THEN
+
+    /* Create TriggeredSendDefinition */
+    SET @ts = CreateObject("TriggeredSend")
+    SET @tsDef = CreateObject("TriggeredSendDefinition")
+    SetObjectProperty(@tsDef, "CustomerKey", "322171") /* Replace with your actual Triggered Send CustomerKey */
+    SetObjectProperty(@ts, "TriggeredSendDefinition", @tsDef)
+
+    /* Create Subscriber */
+    SET @ts_sub = CreateObject("Subscriber")
+    SetObjectProperty(@ts_sub, "EmailAddress", @email)
+    SetObjectProperty(@ts_sub, "SubscriberKey", @email)
+
+    /* Add Name Attribute */
+    SET @ts_attr = CreateObject("Attribute")
+    SetObjectProperty(@ts_attr, "Name", "FirstName")
+    SetObjectProperty(@ts_attr, "Value", @name)
+    AddObjectArrayItem(@ts_sub, "Attributes", @ts_attr)
+
+    /* Add subscriber to TriggeredSend */
+    AddObjectArrayItem(@ts, "Subscribers", @ts_sub)
+
+OutputLine(CONCAT("Debug - Name: ", @name, " | Email: ", @email))
+
+    /* Send Email */
+    SET @ts_statusCode = InvokeCreate(@ts, @errorCode)
+  ENDIF
+]%%
+
+<div class="thankyou-container">
+  <h1>Thank You!</h1>
+  <p>Hi %%=v(@name)=%%,</p>
+  <p>Your registration was successful. You’ve unlocked a <strong>20% discount</strong>!</p>
+  <p>Your coupon code is: <strong>AURICC20</strong></p>
+  <p>We’ve also sent you a confirmation email. </p>
+</div>
+
+
